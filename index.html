@@ -22,7 +22,6 @@
       .stocks-container {
         margin-bottom: 1.5em;
         width: 100%;
-        /* max-width: 600px; */
       }
       .stocks-container
       table {
@@ -31,7 +30,6 @@
         font-size: 1.1em;
       }
       .stock-symbol {
-        /* width: 12%; */
         padding: 2px 4px 2px 0px;
       }
       .stock-price, .stock-change, .stock-change-pct, .stock-mkt-cap {
@@ -40,23 +38,11 @@
 	  .symbol-size {
 		  font-size: xx-large;
 	  }
-	  /*
-      @media (max-width: 576px) {
-        table { margin-bottom: 3em; }
-        .stock-mkt-cap { display: none; }
-        .stock-symbol { width: 16%; }
-        .stock-price, .stock-change, .stock-change-pct { width: 28%; }
-        td.stock-symbol, td.stock-price, td.stock-change, td.stock-change-pct {
-          padding-top: 1em;
-          padding-bottom: 1em;
-        }
-      }
-	  */
 	  .row {
 		  padding-left: 15px;
 		  padding-right: 15px;
-		  padding-top: 15px;
-		  padding-bottom: 5px;
+		  padding-top: 0px;
+		  padding-bottom: 0px;
 	  }
       summary:hover { cursor: pointer; }
       summary::-webkit-details-marker { display: none; }
@@ -105,7 +91,7 @@
           let html = `
 
 			<div class="col-md-3" data-symbol="${symbol}">
-			<a class="symbol-size" href="${symbolUrl(symbol)}" target="_blank">${symbol}</a>
+			<a class="symbol-size" href="#" target="_blank">${symbol}</a>
 				<div class="row">
 					<div class="company-name"></div>
 					<div class="company-website"></div>
@@ -188,22 +174,18 @@
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-price`).forEach(e => {
               e.innerHTML = '<h2>' + formattedPrice + '</h2>';
-              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-change`).forEach(e => {
               e.innerHTML = formattedChange;
-              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-change-pct`).forEach(e => {
               e.innerHTML = '<h4>' + formattedChangePercent + '</h4>';
-              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-mkt-cap`).forEach(e => {
               e.innerHTML = 'Market Cap: ' + formattedMarketCap;
-              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             if (addTitle) {
@@ -226,10 +208,6 @@
         }
 
         return portfolios;
-      }
-
-      function symbolUrl(symbol) {
-        return `https://ivancampos.github.io/stocks/${symbol}`;
       }
 
       function formatQuote(value) {
