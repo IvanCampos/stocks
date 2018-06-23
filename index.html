@@ -5,13 +5,14 @@
     <meta charset="utf-8">
     <title>Stocks!</title>
     <link rel="icon" href="https://d3v3cbxkdlyonc.cloudfront.net/stocks/favicon.ico">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <meta name="description" content="A free, lightweight, blazing-fast page to get stock quotes using the IEX API">
 
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
           "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif;
-		  background-color: #E0E0E0;
+		  background-color: #F5F5F5;
 		  color: #323232;
       }
 	  a:link { color: #85bb65; }
@@ -21,23 +22,25 @@
       .stocks-container {
         margin-bottom: 1.5em;
         width: 100%;
-        max-width: 600px;
+        /* max-width: 600px; */
       }
-      .stocks-container /*a { text-decoration: none; }*/
+      .stocks-container
       table {
         border-collapse: collapse;
         width: 100%;
         font-size: 1.1em;
       }
       .stock-symbol {
-        width: 12%;
+        /* width: 12%; */
         padding: 2px 4px 2px 0px;
       }
       .stock-price, .stock-change, .stock-change-pct, .stock-mkt-cap {
-        width: 22%;
-        text-align: right;
-        padding: 2px 4px;
+
       }
+	  .symbol-size {
+		  font-size: xx-large;
+	  }
+	  /*
       @media (max-width: 576px) {
         table { margin-bottom: 3em; }
         .stock-mkt-cap { display: none; }
@@ -48,6 +51,13 @@
           padding-bottom: 1em;
         }
       }
+	  */
+	  .row {
+		  padding-left: 15px;
+		  padding-right: 15px;
+		  padding-top: 15px;
+		  padding-bottom: 5px;
+	  }
       summary:hover { cursor: pointer; }
       summary::-webkit-details-marker { display: none; }
     </style>
@@ -63,17 +73,13 @@
 
     <p class="updated-timestamp"></p>
 
-    <p>Customize <a href="https://github.com/toddwschneider/stocks" target="_blank">on GitHub</a></p>
+    <p>Customize <a href="https://github.com/ivancampos/stocks" target="_blank">on GitHub</a></p>
 
     <script>
       'use strict';
 
       const DEFAULT_PORTFOLIOS = [
-          {'name': 'Tech', 'symbols': ['AAPL', 'GOOG', 'GOOGL', 'AMZN', 'NFLX', 'BABA', 'AMD', 'NVDA', 'TEAM', 'PANW', 'SQ', 'OSTK']},
-          {'name': 'Autos', 'symbols': ['TSLA']},
-          {'name': 'BigCos', 'symbols': ['DIS', 'NKE']},
-          {'name': 'Banks', 'symbols': ['BAC']},
-          {'name': 'Watch', 'symbols': ['MSFT', 'SPOT', 'FB', 'TWTR', 'SNAP', 'HACK', 'CRM', 'ATVI']}
+          {'name': 'Tech', 'symbols': ['AAPL','TSLA','GOOG','GOOGL','AMZN','NFLX','NVDA','BAC','DIS','NKE','BABA', 'AMD', 'TEAM', 'SQ', 'PANW', 'OSTK']}
       ];
 
       const PORTFOLIOS = portfoliosFromQueryParams() || DEFAULT_PORTFOLIOS;
@@ -85,39 +91,32 @@
       let containerDiv = document.querySelector('.stocks-container');
       let updatedDiv = document.querySelector('.updated-timestamp');
 
-      PORTFOLIOS.forEach((p, i) => addPortfolio(p, i === 0));
+      PORTFOLIOS.forEach((p, i) => addPortfolio(p));
       symbols = symbols.filter((s, i) => symbols.indexOf(s) === i);
       updateData('addTitle');
       setInterval(updateData, REFRESH_SECONDS * 1000);
 
-      function addPortfolio(portfolio, includeHeader) {
-        let tableHeaderHtml = '';
-        if (includeHeader) {
-          tableHeaderHtml = `
-            <thead>
-              <tr>
-                <th></th>
-                <th class="stock-price">Last</th>
-                <th class="stock-change">Change</th>
-                <th class="stock-change-pct">Change%</th>
-                <th class="stock-mkt-cap">Mkt Cap</th>
-              </tr>
-            </thead>
-          `
-        }
+      function addPortfolio(portfolio) {
 
         let tableBodyHtml = portfolio.symbols.map(symbol => {
           symbol = symbol.toUpperCase();
           symbols.push(symbol);
 
           let html = `
-            <tr data-symbol="${symbol}">
-              <td class="stock-symbol"><a href="${symbolUrl(symbol)}" target="_blank">${symbol}</a></td>
-              <td class="stock-price"></td>
-              <td class="stock-change"></td>
-              <td class="stock-change-pct"></td>
-              <td class="stock-mkt-cap"></td>
-            </tr>
+
+			<div class="col-md-3" data-symbol="${symbol}">
+			<a class="symbol-size" href="${symbolUrl(symbol)}" target="_blank">${symbol}</a>
+				<div class="row">
+					<div class="company-name"></div>
+					<div class="company-website"></div>
+					<div class="company-ceo"></div>
+					<div class="stock-mkt-cap"></div>
+					<div class="pe-ratio"></div>
+					<div></div>
+					<div class="stock-price"></div>
+					<div class="stock-change-pct"></div>
+				</div>
+			</div>
           `
 
           return html;
@@ -125,14 +124,10 @@
 
         let portfolioDiv = document.createElement('div');
 
-        portfolioDiv.innerHTML = `
-          <details open>
-            <summary><h2>${portfolio.name}</h2></summary>
-            <table>${tableHeaderHtml}<tbody>${tableBodyHtml}</tbody></table>
-          </details>
-        `;
+        portfolioDiv.innerHTML = `<div class="row">${tableBodyHtml}</div>`;
 
         containerDiv.appendChild(portfolioDiv);
+
       }
 
       function updateData(addTitle) {
@@ -149,7 +144,7 @@
       function updateDataForBatch(symbols, addTitle) {
         let filters = ['latestPrice', 'change', 'changePercent', 'marketCap'];
         if (addTitle) filters.push('companyName');
-        let url = `${BASE_URL}?types=quote,dividends,news,peers,stats,company,financials,splits,volume-by-venue&range=1y&symbols=${symbols.join(',')}&filter=${filters.join(',')}`;
+        let url = `${BASE_URL}?types=quote,dividends,news,peers,stats,company,financials,splits,volume-by-venue,earnings&range=1y&symbols=${symbols.join(',')}`;
 
         fetch(url).then(response => response.json()).then(json => {
           symbols.forEach(symbol => {
@@ -162,25 +157,53 @@
             let formattedMarketCap = formatMarketCap(data.quote.marketCap);
             let rgbColor = data.quote.changePercent > 0 ? '0,255,0' : '255,0,0';
             let rgbOpacity = Math.min(Math.abs(data.quote.changePercent) * 20, 1);
+            let companyName = data.quote.companyName;
+            let companyWebsite = data.company.website;
+            let companyCEO = data.company.CEO;
+            let peRatio = data.quote.peRatio;
+
+          	document.querySelectorAll(`[data-symbol="${symbol}"]`).forEach(e => {
+                e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
+	  		});
+
+            document.querySelectorAll(`[data-symbol="${symbol}"] .company-name`).forEach(e => {
+              	e.innerHTML = companyName;
+      		});
+
+          	document.querySelectorAll(`[data-symbol="${symbol}"] .company-website`).forEach(e => {
+          	    e.innerHTML = '<a href="' + companyWebsite + '">' + companyWebsite + '</a>';
+      		});
+
+          	document.querySelectorAll(`[data-symbol="${symbol}"] .company-ceo`).forEach(e => {
+              	if (companyCEO == ""){
+              	    e.innerHTML = '<BR/>';
+		  		} else {
+                    e.innerHTML = 'CEO: ' + companyCEO;
+                }
+      		});
+
+          	document.querySelectorAll(`[data-symbol="${symbol}"] .pe-ratio`).forEach(e => {
+              e.innerHTML = 'P/E: ' + peRatio;
+      		});
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-price`).forEach(e => {
-              e.innerHTML = formattedPrice;
-              e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
+              e.innerHTML = '<h2>' + formattedPrice + '</h2>';
+              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-change`).forEach(e => {
               e.innerHTML = formattedChange;
-              e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
+              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-change-pct`).forEach(e => {
-              e.innerHTML = formattedChangePercent;
-              e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
+              e.innerHTML = '<h4>' + formattedChangePercent + '</h4>';
+              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             document.querySelectorAll(`[data-symbol="${symbol}"] .stock-mkt-cap`).forEach(e => {
-              e.innerHTML = formattedMarketCap;
-              e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
+              e.innerHTML = 'Market Cap: ' + formattedMarketCap;
+              //e.setAttribute('style', `background-color: rgba(${rgbColor}, ${rgbOpacity})`);
             });
 
             if (addTitle) {
@@ -206,7 +229,7 @@
       }
 
       function symbolUrl(symbol) {
-        return `https://iextrading.com/apps/stocks/#/${symbol}`;
+        return `https://ivancampos.github.io/stocks/${symbol}`;
       }
 
       function formatQuote(value) {
