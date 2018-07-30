@@ -143,7 +143,7 @@
             let rgbOpacity = Math.min(Math.abs(data.quote.changePercent) * 20, 1);
             let companyName = data.quote.companyName;
             let companyWebsite = data.company.website;
-            let companyCEO = data.company.CEO;
+            let companyCEO = data.company.CEO.substr(0, 25);
             let peRatio = data.quote.peRatio;
 
           	document.querySelectorAll(`[data-symbol="${symbol}"]`).forEach(e => {
