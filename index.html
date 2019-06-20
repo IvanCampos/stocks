@@ -70,6 +70,7 @@
       const REFRESH_SECONDS = 10;
       const BATCH_SIZE = 100;
       const BASE_URL = 'https://api.iextrading.com/1.0/stock/market/batch';
+      const API_TOKEN = 'pk_479a164c25434ef2844cd6f0553bb33a';
 
       let symbols = [];
       let containerDiv = document.querySelector('.stocks-container');
@@ -127,7 +128,7 @@
       function updateDataForBatch(symbols, addTitle) {
         let filters = ['latestPrice', 'change', 'changePercent', 'marketCap'];
         if (addTitle) filters.push('companyName');
-        let url = `${BASE_URL}?types=quote,dividends,news,peers,stats,company,financials,splits,volume-by-venue,earnings&range=1y&symbols=${symbols.join(',')}`;
+        let url = `${BASE_URL}?types=quote,dividends,news,peers,stats,company,financials,splits,volume-by-venue,earnings&range=1y&symbols=${symbols.join(',')}&token=${API_TOKEN}`;
 
         fetch(url).then(response => response.json()).then(json => {
           symbols.forEach(symbol => {
