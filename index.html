@@ -63,7 +63,7 @@
       'use strict';
 
       const DEFAULT_PORTFOLIOS = [
-          {'name': 'Tech', 'symbols': ['AAPL','TSLA','GOOG','GOOGL','AMZN','NFLX','NVDA','BAC','DIS','NKE','BABA', 'AMD', 'TEAM', 'TWTR', 'BIDU', 'CRM', 'MSFT', 'WORK', 'FB', 'SPOT','CRWD','GBTC','UBER','BYND']}
+          {'name': 'Tech', 'symbols': ['AAPL','TSLA','GOOG','GOOGL','AMZN','NFLX','NVDA','ETHE','DIS','NKE','BABA', 'AMD', 'TEAM', 'TWTR', 'IPOD', 'ARKK', 'MSFT','GBTC']}
       ];
 
       const PORTFOLIOS = portfoliosFromQueryParams() || DEFAULT_PORTFOLIOS;
@@ -128,7 +128,7 @@
       function updateDataForBatch(symbols, addTitle) {
         let filters = ['latestPrice', 'change', 'changePercent', 'marketCap'];
         if (addTitle) filters.push('companyName');
-        let url = `${BASE_URL}?types=quote,dividends,news,peers,stats,company,financials,splits,volume-by-venue,earnings&range=1y&symbols=${symbols.join(',')}&token=${API_TOKEN}`;
+        let url = `${BASE_URL}?types=quote,stats,company&range=1y&symbols=${symbols.join(',')}&token=${API_TOKEN}`;
 
         fetch(url).then(response => response.json()).then(json => {
           symbols.forEach(symbol => {
